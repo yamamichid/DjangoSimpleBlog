@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import DetailView, ListView, CreateView
 
@@ -13,6 +14,13 @@ class ArticleDetailView(DetailView):
         response = super().get(request, *args, **kwargs)
         response.context_data['comment_form'] = CommentForm()
         return response
+
+    def post(self, request, *args, **kwargs):
+        if "like" in request.POST:
+            article = Article.objects.get(pk=self.kwargs["pk"])
+            article.like += 1
+            article.save()
+        return redirect(reverse("blog:article-detail", kwargs={"pk": self.kwargs["pk"]}))
 
 
 class ArticleListView(ListView):

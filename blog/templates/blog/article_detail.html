@@ -9,6 +9,12 @@
 <small>updated at: {{ object.updated_at }}</small>
 <br>
 <p>{{ object.text }}</p>
+<p>
+    <form method="post">{% csrf_token %}
+        <input type="submit" value="Like: {{ object.like }}">
+        <input type="hidden" name="like">
+    </form>
+</p>
 <br>
 <h2>Comments</h2>
 <ol>
