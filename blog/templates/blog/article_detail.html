@@ -9,5 +9,21 @@
 <small>updated at: {{ object.updated_at }}</small>
 <br>
 <p>{{ object.text }}</p>
+<br>
+<h2>Comments</h2>
+<ol>
+    {% for comment in object.comment_set.all %}
+        <li>
+            <p>{{ comment.author }}</p>
+            <p>{{ comment.text }}</p>
+        </li>
+    {% empty %}
+        <li>No comments yet.</li>
+    {% endfor %}
+</ol>
+<br>
+<form method="post" action="{% url 'blog:comment-create' object.id %}">{% csrf_token %}
+    {{ comment_form.as_p }}
+    <input type="submit" value="Save">
+</form>
 {% endblock %}
-
