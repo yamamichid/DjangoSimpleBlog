@@ -9,6 +9,9 @@ pillow = "*"
 django-markdownx = ">=4.0.0b1"
 crispy-bootstrap5 = "*"
 django-crispy-forms = "*"
+django-heroku = "*"
+gunicorn = "*"
+whitenoise = "*"
 
 [dev-packages]
 flake8 = "*"
