@@ -1,35 +1,50 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load markdownx %}
+{% load crispy_forms_tags %}
 
 {% block title %}{{ object.title }}{% endblock %}
 
 {% block content %}
-<h1>{{ object.title }}</h1>
-<small>created at: {{ object.created_at }}</small>
-<small>updated at: {{ object.updated_at }}</small>
-<br>
-<p>{{ object.text }}</p>
-<p>
-    <form method="post">{% csrf_token %}
-        <input type="submit" value="Like: {{ object.like }}">
-        <input type="hidden" name="like">
-    </form>
-</p>
-<br>
-<h2>Comments</h2>
-<ol>
-    {% for comment in object.comment_set.all %}
-        <li>
-            <p>{{ comment.author }}</p>
-            <p>{{ comment.text }}</p>
-        </li>
-    {% empty %}
-        <li>No comments yet.</li>
-    {% endfor %}
-</ol>
-<br>
-<form method="post" action="{% url 'blog:comment-create' object.id %}">{% csrf_token %}
-    {{ comment_form.as_p }}
-    <input type="submit" value="Save">
-</form>
+<main class="container">
+  <div class="row">
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-8">
+      <article>
+        <h1>{{ object.title }}</h1>
+        <p class="text-muted">{{ object.created_at }}</p>
+        <img src="{{ object.image.url }}" class="card-img-top" alt="...">
+        <hr>
+        <div class="overflow-auto">
+          <p>{{ object.text | markdown_to_html }}</p>
+        </div>
+      </article>
+      <hr>
+      <h2>Comments</h2>
+      <ol class="list-group list-group-flush">
+          {% for comment in object.comment_set.all %}
+              <li class="list-group-item overflow-auto">
+                  <p class="d-flex justify-content-between">
+                    <span class="fw-bold">{{ comment.author }}</span>
+                    <small class="text-end text-muted">{{ comment.created_at }}</small>
+                  </p>
+                  <p>{{ comment.text | markdown_to_html_with_escape }}</p>
+              </li>
+          {% empty %}
+              <div>No comments yet.</div>
+          {% endfor %}
+      </ol>
+      <hr>
+      <form method="post" action="{% url 'blog:comment-create' object.id %}" class="form mb-3">
+        {% csrf_token %}
+        {{ comment_form|crispy }}
+        <button type="submit" class="submit btn btn-outline-secondary">Submit</button>
+      </form>
+      {{ comment_form.media }}
+    </div>
+    <div class="col-md-2">
+    </div>
+  </div>
+</main>
 {% endblock %}

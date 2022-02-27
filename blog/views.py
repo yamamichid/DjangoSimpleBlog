@@ -1,9 +1,21 @@
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import DetailView, ListView, CreateView
+from django.views.generic import DetailView, ListView, CreateView, TemplateView
 
 from .forms import CommentForm
 from .models import Article, Comment
+
+
+class HomeView(TemplateView):
+    template_name = "blog/home.html"
+    extra_context = {
+        'title': 'Home',
+    }
+
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+        response.context_data['articles'] = Article.objects.order_by('-created_at').all()
+        return response
 
 
 class ArticleDetailView(DetailView):
